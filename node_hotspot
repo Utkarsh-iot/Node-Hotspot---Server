@@ -1,0 +1,38 @@
+//Compiled by Utkarsh
+
+
+#include<ESP8266WiFi.h>
+#define led D5
+WiFiClient client;
+WiFiServer server(80);
+
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(led,OUTPUT);
+  WiFi.softAP("nodemcu","123456789");
+
+  Serial.println();
+  Serial.println("Nodemcu is connected");
+  Serial.println(WiFi.softAPIP());
+  server.begin();
+}
+void loop()
+{
+  client = server.available();
+  if(client == 1)
+  {
+    String request = client.readStringUntil('\n');
+    Serial.println(request);
+    request.trim();
+  
+  if(request == "GET /led%20on HTTP/1.1")
+  {
+    digitalWrite(led,1);
+  }
+   if(request == "GET /led%20off HTTP/1.1")
+  {
+    digitalWrite(led,0);
+  }
+  }
+}
